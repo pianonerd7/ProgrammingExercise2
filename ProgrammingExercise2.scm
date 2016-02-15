@@ -63,6 +63,18 @@
       (else (reverse*-cps (cdr l) (lambda (v) (return (append v (cons (car l) '())))))))))
 
 ; 6. vectormult
+(define firstcolumn-cps
+  (lambda (m return)
+    (if (null? m)
+        (return '())
+        (firstcolumn-cps (cdr m) (lambda (v) (return (cons (caar m) v)))))))
+
+(define restOfColumns-cps
+  (lambda (m return)
+    (if (null? m)
+        (return '())
+        (restOfColumns-cps(cdr m) (lambda (v) (return (cons (cdar m) v)))))))
+
 (define vectormult
   (lambda (rowvector matrix)
     (vectormult-cps rowvector matrix (lambda (v) v))))
@@ -70,16 +82,4 @@
 (define vectormult-cps
   (lambda (rowvector matrix return)
     ()))
-
-(define firstcolumn-cps
-  (lambda (m return)
-    (if (null? m)
-        (return '())
-        (firstcolumn-cps (cdr m) (lambda (v) (return (cons (car (car m)) v)))))))
-
-(define restOfColumns
-  (lambda (m)
-    (if (null? m)
-        '()
-        (cons (cdr (car m))))))
                                                
