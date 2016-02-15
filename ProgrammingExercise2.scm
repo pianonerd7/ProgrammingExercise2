@@ -8,7 +8,7 @@
  (lambda (l1 l2 return)
    (if (or (null? l1) (null? l2))
        (return 0)
-       (dotproduct-cps (cdr l1) (cdr l2) (lambda (v) (+ (* (car l1) (car l2)) v))))))
+       (dotproduct-cps (cdr l1) (cdr l2) (lambda (v) (return (+ (* (car l1) (car l2)) v)))))))
 
 ; 2. removesubsequence
 (define removesubsequence
@@ -75,7 +75,7 @@
         (return '())
         (restOfColumns-cps(cdr m) (lambda (v) (return (cons (cdar m) v)))))))
 
-(define vectormults
+(define vectormult
   (lambda (rowvector matrix)
     (vectormult-cps rowvector matrix (lambda (v) v))))
 
@@ -84,3 +84,14 @@
     (if (or (null? matrix) (null? (car matrix)))
         (return '())
         (vectormult-cps rowvector (restOfColumns-cps matrix (lambda (v) v)) (lambda (v) (return (cons (dotproduct rowvector (firstcolumn-cps matrix (lambda (v) v))) v)))))))
+
+; 7. matrixmultiply
+(define matrixmultiply
+  (lambda (matrix1 matrix2)
+    (matrixmultiply-cps matrix1 matrix2 (lambda (v) v))))
+
+(define matrixmultiply-cps
+  (lambda (matrix1 matrix2 return)
+    (if (null? m1)
+        (return '())
+        (matrixmultiply-cps (cdr matrix1) matrix2 (lambda (v) (return (cons (vectormult (car matrix1) matrix2) v)))))))
