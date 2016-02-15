@@ -23,11 +23,18 @@
       (else (removesubsequence-cps l1 (cdr l2) (append acc (cons (car l2) '())))))))
 
 ; 3. squareroot
+(define squareroot
+  (lambda (val iter)
+    (squareroot-cps val iter (lambda (v) v))))
 
 (define squareroot-cps
   (lambda (val iter return)
     (if (zero? iter)
         (return val)
-        (squareroot-cps val (- iter 1) (lambda (v) (- v (/ (- (* v v) val) (* 2 v))))))))
+        (squareroot-cps val (- iter 1) (lambda (v) (return (- v (/ (- (* v v) val) (* 2 v)))))))))
 
 ; 4. replacecall
+(define replaceall
+  (lambda (a1 a2 l return)
+    (cond
+      ((null? l) a1))))
