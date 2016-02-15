@@ -34,7 +34,16 @@
         (squareroot-cps val (- iter 1) (lambda (v) (return (- v (/ (- (* v v) val) (* 2 v)))))))))
 
 ; 4. replacecall
-(define replaceall
+(define replaceall*
+  (lambda (a1 a2 l)
+    (replaceall*-cps a1 a2 l (lambda (v) v))))
+
+(define replaceall*-cps
   (lambda (a1 a2 l return)
     (cond
-      ((null? l) a1))))
+      ((null? l) (return l))
+      ((list? (car l)) (replaceall*-cps a1 a2 (car l)
+                                        (lambda (v1) (replaceall*-cps a1 a2 (cdr l)
+                                                                      (lambda (v2) (return (cons v1 v2)))))))
+      ((eq? (car l) a1) (replaceall*-cps a1 a2 (cdr l) (lambda (v) (return (cons a2 v)))))
+      (else (replaceall*-cps a1 a2 (cdr l) (lambda (v) (return (cons (car l) v))))))))
