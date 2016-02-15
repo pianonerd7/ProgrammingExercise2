@@ -13,10 +13,14 @@
 ; 2. removesubsequence
 (define removesubsequence
   (lambda (l1 l2)
-    (removesubsequence-cps l1 l2 '())))
+    (removesubsequence-cps l1 l2 (lambda (v) v))))
 
 (define removesubsequence-cps
-  (lambda 
+  (lambda (l1 l2 return)
+    (cond
+      ((or (null? l1) (null? l2)) (return l2))
+      ((eq? (car l1) (car l2)) (removesubsequence-cps (cdr l1) (cdr l2) (lambda (v) (return v))))
+      (else (removesubsequence-cps l1 (cdr l2) (lambda (v) (return (cons (car l2) v))))))))
 
 ; 3. squareroot
 (define squareroot
