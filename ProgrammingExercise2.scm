@@ -18,6 +18,8 @@
 (define removesubsequence-cps
   (lambda (l1 l2 acc)
     (cond
-      ((or(null? l1) (null? l2)) acc)
+      ((or(null? l1) (null? l2)) (append acc l2))
       ((eq? (car l1) (car l2)) (removesubsequence-cps (cdr l1) (cdr l2) acc))
       (else (removesubsequence-cps l1 (cdr l2) (append acc (cons (car l2) '())))))))
+
+;
