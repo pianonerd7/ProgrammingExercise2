@@ -47,3 +47,18 @@
                                                                       (lambda (v2) (return (cons v1 v2)))))))
       ((eq? (car l) a1) (replaceall*-cps a1 a2 (cdr l) (lambda (v) (return (cons a2 v)))))
       (else (replaceall*-cps a1 a2 (cdr l) (lambda (v) (return (cons (car l) v))))))))
+
+; 5. reverse*
+(define reverse*
+  (lambda (l)
+    (reverse*-cps l (lambda (v) v))))
+
+(define reverse*-cps
+  (lambda (l return)
+    (cond
+      ((null? l) (return l))
+      ((pair? (car l)) (reverse*-cps (car l)
+                                     (lambda (v1) (reverse*-cps (cdr l)
+                                                              (lambda (v2) (return (append v2 (cons v1 '()))))))))
+      (else (reverse*-cps (cdr l) (lambda (v) (return (append v (cons (car l) '())))))))))
+                                               
