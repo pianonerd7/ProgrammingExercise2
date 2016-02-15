@@ -75,11 +75,12 @@
         (return '())
         (restOfColumns-cps(cdr m) (lambda (v) (return (cons (cdar m) v)))))))
 
-(define vectormult
+(define vectormults
   (lambda (rowvector matrix)
     (vectormult-cps rowvector matrix (lambda (v) v))))
 
 (define vectormult-cps
   (lambda (rowvector matrix return)
-    ()))
-                                               
+    (if (or (null? matrix) (null? (car matrix)))
+        (return '())
+        (vectormult-cps rowvector (restOfColumns-cps matrix (lambda (v) v)) (lambda (v) (return (cons (dotproduct rowvector (firstcolumn-cps matrix (lambda (v) v))) v)))))))
