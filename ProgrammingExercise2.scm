@@ -92,6 +92,16 @@
 
 (define matrixmultiply-cps
   (lambda (matrix1 matrix2 return)
-    (if (null? m1)
+    (if (null? matrix1)
         (return '())
         (matrixmultiply-cps (cdr matrix1) matrix2 (lambda (v) (return (cons (vectormult (car matrix1) matrix2) v)))))))
+
+; 8. removesubsequence*
+(define removesubsequence*
+  (lambda (atoms list)
+    (removesubsequence*-cps atoms list (lambda (v1 v2) v2))))
+
+(define removesubsequence*-cps
+  (lambda (atoms list return)
+    (cond
+      ((null? list) (return list)
