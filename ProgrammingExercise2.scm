@@ -104,10 +104,10 @@
 (define removesubsequence*-cps
   (lambda (atoms list return)
     (cond
-      ((or (null? atoms) (null? list)) (return '() list))
-      ((and (list? (car list))(null? (cdr list))) (removesubsequence*-cps atoms (car list) (lambda (v1 v2) (return '() (cons v2 '()))))) 
+      ((or (null? atoms) (null? list)) (return atoms list))
+      ((and (list? (car list))(null? (cdr list))) (removesubsequence*-cps atoms (car list) (lambda (v1 v2) (return v1 (cons v2 '()))))) 
       ((list? (car list)) (removesubsequence*-cps atoms (car list)
-                                                 (lambda (v1 v2) (removesubsequence*-cps atoms (cdr list)
-                                                                                        (lambda (v3 v4) (return '() (cons v2 v4)))))))
-      ((eq? (car atoms) (car list)) (removesubsequence*-cps (cdr atoms) (cdr list) (lambda (v1 v2) (return '() v2)))) 
-      (else (removesubsequence*-cps atoms (cdr list) (lambda (v1 v2) (return '() (cons (car list) v2))))))))
+                                                 (lambda (v1 v2) (removesubsequence*-cps v1 (cdr list)
+                                                                                        (lambda (v3 v4) (return v3 (cons v2 v4)))))))
+      ((eq? (car atoms) (car list)) (removesubsequence*-cps (cdr atoms) (cdr list) (lambda (v1 v2) (return (cdr atoms) v2)))) 
+      (else (removesubsequence*-cps atoms (cdr list) (lambda (v1 v2) (return v1 (cons (car list) v2))))))))
