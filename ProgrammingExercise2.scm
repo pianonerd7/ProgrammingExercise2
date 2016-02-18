@@ -112,6 +112,6 @@
       ((and (list? (car list))(null? (cdr list))) (removesubsequence*-cps atoms (car list) (lambda (v1 v2) (return '() v2)))) 
       ((list? (car list)) (removesubsequence*-cps atoms (car list)
                                                  (lambda (v1 v2) (removesubsequence*-cps atoms (cdr list)
-                                                                                        (lambda (v3 v4) (return v2 v4))))))
+                                                                                        (lambda (v3 v4) (return '() (cons v2 v4)))))))
       ((eq? (car atoms) (car list)) (removesubsequence*-cps (cdr atoms) (cdr list) (lambda (v1 v2) (return '() v2)))) 
       (else (removesubsequence*-cps atoms (cdr list) (lambda (v1 v2) (return '() (cons (car list) v2))))))))
