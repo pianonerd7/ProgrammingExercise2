@@ -134,4 +134,11 @@
                                        ((eq? (car list) atom) (search atom (cdr list) (cdr list)))
                                        (else (search atom (cdr list) acc))))))
                                (search atom (cdr list) (cdr list))))
-      (else (suffix atom (cdr list))))))
+      (else (letrec
+                ((search2
+                  (lambda (atom list acc)
+                    (cond
+                      ((null? list) acc)
+                      ((eq? (car list) atom) (search2 atom (cdr list) (cdr list)))
+                      (else (search2 atom (cdr list) acc))))))
+              (search2 atom (cdr list) list))))))
