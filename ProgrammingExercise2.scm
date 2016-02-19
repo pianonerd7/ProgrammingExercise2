@@ -112,16 +112,7 @@
       ((eq? (car atoms) (car list)) (removesubsequence*-cps (cdr atoms) (cdr list) (lambda (v1 v2) (return (cdr atoms) v2)))) 
       (else (removesubsequence*-cps atoms (cdr list) (lambda (v1 v2) (return v1 (cons (car list) v2))))))))
 
-; 9. suffix
-
-(define suff
-  (lambda (atom list)
-    (cond
-      ((null? atom) list)
-      ((null? list) list)
-      ((eq? (car list) atom) (suff atom (cdr list)))
-      (else (cons (car list) (suff atom (cdr list)))))))
-
+; 9. suffix with letrec
 (define suffix
   (lambda (atom list)
     (cond
@@ -142,3 +133,28 @@
                       ((eq? (car list) atom) (search2 atom (cdr list) (cdr list)))
                       (else (search2 atom (cdr list) acc))))))
               (search2 atom (cdr list) list))))))
+
+; 10. suffix with call/cc
+(define suffix2
+  (lambda (atom list)
+    (call/cc
+     (lambda(break)
+       (cond
+         ((or (null? atom) (null? list)) list)
+         ((eq? (car list) atom) (letrec
+                                    ((search
+                                      (lambda (atom list acc)
+                                        (cond
+                                          ((null? list) (break acc))
+                                          ((eq? (car list) atom) (search atom (cdr list) (cdr list)))
+                                          (else atom (cdr list) (cdr list))))))
+                                      (search atom (cdr list) (cdr list))))
+      (else (letrec
+                ((search2
+                  (lambda (atom list acc)
+                    (cond
+                      ((null? list) (break acc))
+                      ((eq? (car list) atom) (search2 atom (cdr list) (cdr list)))
+                      (else (search2 atom (cdr list) acc))))))
+              (search2 atom (cdr list) list))))))))
+                                        
