@@ -115,24 +115,14 @@
 ; 9. suffix with letrec
 (define suffix
   (lambda (atom list)
-    (cond
-      ((or (null? atom) (null? list)) list)
-      ((eq? (car list) atom) (letrec
-                                 ((search
-                                   (lambda (atom list acc)
-                                     (cond
-                                       ((null? list) acc)
-                                       ((eq? (car list) atom) (search atom (cdr list) (cdr list)))
-                                       (else (search atom (cdr list) acc))))))
-                               (search atom (cdr list) (cdr list))))
-      (else (letrec
-                ((search2
-                  (lambda (atom list acc)
-                    (cond
-                      ((null? list) acc)
-                      ((eq? (car list) atom) (search2 atom (cdr list) (cdr list)))
-                      (else (search2 atom (cdr list) acc))))))
-              (search2 atom (cdr list) list))))))
+    (letrec
+        ((search
+         (lambda (atom list return)
+           (cond
+             ((null? list) (return list))
+             ((eq? (car list) atom) (search atom (cdr list) (lambda (v) v)))
+             (else (search atom (cdr list) (lambda (v) (return (cons (car list) v)))))))))
+      (search atom list (lambda (v) v)))))
 
 ; 10. suffix with call/cc
 (define suffix2
