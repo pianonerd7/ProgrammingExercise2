@@ -107,8 +107,8 @@
       ((or (null? atoms) (null? list)) (return atoms list))
       ((and (list? (car list))(null? (cdr list))) (removesubsequence*-cps atoms (car list) (lambda (v1 v2) (return v1 (cons v2 '()))))) 
       ((list? (car list)) (removesubsequence*-cps atoms (car list)
-                                                 (lambda (v1 v2) (removesubsequence*-cps v1 (cdr list)
-                                                                                        (lambda (v3 v4) (return v3 (cons v2 v4)))))))
+                                                  (lambda (v1 v2) (removesubsequence*-cps v1 (cdr list)
+                                                                                          (lambda (v3 v4) (return v3 (cons v2 v4)))))))
       ((eq? (car atoms) (car list)) (removesubsequence*-cps (cdr atoms) (cdr list) (lambda (v1 v2) (return (cdr atoms) v2)))) 
       (else (removesubsequence*-cps atoms (cdr list) (lambda (v1 v2) (return v1 (cons (car list) v2))))))))
 
@@ -117,16 +117,23 @@
   (lambda (atom list)
     (letrec
         ((search
-         (lambda (atom list return)
-           (cond
-             ((null? list) (return list))
-             ((eq? (car list) atom) (search atom (cdr list) (lambda (v) v)))
-             (else (search atom (cdr list) (lambda (v) (return (cons (car list) v)))))))))
+          (lambda (atom list return)
+            (cond
+              ((null? list) (return list))
+              ((eq? (car list) atom) (search atom (cdr list) (lambda (v) v)))
+              (else (search atom (cdr list) (lambda (v) (return (cons (car list) v)))))))))
       (search atom list (lambda (v) v)))))
 
 ; 10. suffix with call/cc
 (define suffix2
   (lambda (atom list)
     (call/cc
-     
-                                        
+     (lambda (break)
+       (letrec
+           ((search
+             (lambda (atom list acc)
+               (cond
+                 ((null? list) break acc)
+                 ((eq? (car list) atom) (search atom (cdr list) '()))
+                 (else (search atom (cdr list) (append acc (cons (car list) '()))))))))
+         (search atom list '()))))))
