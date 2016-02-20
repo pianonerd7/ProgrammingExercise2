@@ -128,23 +128,5 @@
 (define suffix2
   (lambda (atom list)
     (call/cc
-     (lambda(break)
-       (cond
-         ((or (null? atom) (null? list)) list)
-         ((eq? (car list) atom) (letrec
-                                    ((search
-                                      (lambda (atom list acc)
-                                        (cond
-                                          ((null? list) (break acc))
-                                          ((eq? (car list) atom) (search atom (cdr list) (cdr list)))
-                                          (else atom (cdr list) (cdr list))))))
-                                      (search atom (cdr list) (cdr list))))
-      (else (letrec
-                ((search2
-                  (lambda (atom list acc)
-                    (cond
-                      ((null? list) (break acc))
-                      ((eq? (car list) atom) (search2 atom (cdr list) (cdr list)))
-                      (else (search2 atom (cdr list) acc))))))
-              (search2 atom (cdr list) list))))))))
+     
                                         
