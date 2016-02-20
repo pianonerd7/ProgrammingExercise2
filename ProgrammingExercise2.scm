@@ -131,9 +131,9 @@
      (lambda (break)
        (letrec
            ((search
-             (lambda (atom list acc)
+             (lambda (atom list return)
                (cond
-                 ((null? list) break acc)
-                 ((eq? (car list) atom) (search atom (cdr list) '()))
-                 (else (search atom (cdr list) (append acc (cons (car list) '()))))))))
-         (search atom list '()))))))
+                 ((null? list) (return list))
+                 ((eq? (car list) atom) (search atom (cdr list) (lambda (v) (break v))))
+                 (else (search atom (cdr list) (lambda (v) (return (cons (car list) v)))))))))
+         (search atom list (lambda (v) v)))))))
